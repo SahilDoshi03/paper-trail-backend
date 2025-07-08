@@ -1,0 +1,34 @@
+{
+  "name": "paper-trail-backend",
+  "version": "1.0.0",
+  "description": "This is backend for the paper-trail app in express",
+  "homepage": "https://github.com/SahilDoshi03/paper-trail-backend#readme",
+  "bugs": {
+    "url": "https://github.com/SahilDoshi03/paper-trail-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SahilDoshi03/paper-trail-backend.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "dotenv": "^17.1.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.10",
+    "prisma": "^6.11.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
