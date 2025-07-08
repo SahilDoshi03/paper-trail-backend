@@ -1,8 +1,8 @@
 import express from "express";
-import { getDocuments } from "../controllers/document";
+import { getDocuments, createDocument } from "../controllers/document";
 
 const router = express.Router();
 
-router.route("/").get(getDocuments);
+router.route("/").get(getDocuments).post(createDocument);
 
 export default router
