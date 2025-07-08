@@ -14,9 +14,10 @@ const getDocuments = async (_: Request, res: Response) => {
 
 const createDocument = async (_: Request, res: Response) => {
   try {
+    console.log("CREATION")
     const newDocument = await prisma.document.create({
       data: {
-        content: "New Doc",
+        content: ["New Doc"],
       },
     });
 
