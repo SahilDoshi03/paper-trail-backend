@@ -8,7 +8,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model document {
-  id      Int  @id @default(autoincrement())
-  content Json
+model ElementNode {
+  id              Int        @id @default(autoincrement())
+  type            String
+  textAlign       String
+  fontFamily      String
+  paraSpaceAfter  Int
+  paraSpaceBefore Int
+  lineHeight      Float
+  documentId      Int
+  document        Document   @relation(fields: [documentId], references: [id])
+  children        TextNode[]
+}
+
+model TextNode {
+  id              Int         @id @default(autoincrement())
+  text            String
+  textAlign       String
+  color           String
+  fontSize        String
+  bold            Boolean
+  italic          Boolean
+  underline       Boolean
+  backgroundColor String
+  elementId       Int
+  element         ElementNode @relation(fields: [elementId], references: [id])
+}
+
+model Document {
+  id        Int           @id @default(autoincrement())
+  title     String        @default("Untitled Document")
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  elements  ElementNode[]
 }
