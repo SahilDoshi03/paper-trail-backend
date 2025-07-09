@@ -12,6 +12,38 @@ const getDocuments = async (_: Request, res: Response) => {
   }
 };
 
+const getDocumentById = async (req: Request, res: Response): Promise<void> => {
+  const docId = parseInt(req.params.id, 10);
+
+  if (isNaN(docId)) {
+    res.status(400).json({ error: "Invalid document ID" });
+    return;
+  }
+
+  try {
+    const document = await prisma.document.findUnique({
+      where: { id: docId },
+      include: {
+        elements: {
+          include: {
+            children: true,
+          },
+        },
+      },
+    });
+
+    if (!document) {
+      res.status(404).json({ error: "Document not found" });
+      return;
+    }
+
+    res.status(200).json({ document });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const createDocument = async (req: Request, res: Response) => {
   try {
     const { title } = req.body;
@@ -19,6 +51,39 @@ const createDocument = async (req: Request, res: Response) => {
     const newDocument = await prisma.document.create({
       data: {
         title: title || "Untitled Document",
+        elements: {
+          create: [
+            {
+              type: "paragraph",
+              textAlign: "left",
+              fontFamily: "Arial",
+              paraSpaceAfter: 0,
+              paraSpaceBefore: 0,
+              lineHeight: 1.2,
+              children: {
+                create: [
+                  {
+                    text: "",
+                    textAlign: "left",
+                    color: "#ffffff",
+                    fontSize: 16,
+                    bold: false,
+                    italic: false,
+                    underline: false,
+                    backgroundColor: "unset",
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      include: {
+        elements: {
+          include: {
+            children: true,
+          },
+        },
       },
     });
 
@@ -98,5 +163,5 @@ const updateDocument = async (req: Request, res: Response) => {
 };
 
 
-export { getDocuments, createDocument, updateDocument };
+export { getDocuments, getDocumentById, createDocument, updateDocument };
 

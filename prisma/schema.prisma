@@ -26,7 +26,7 @@ model TextNode {
   text            String
   textAlign       String
   color           String
-  fontSize        String
+  fontSize        Int
   bold            Boolean
   italic          Boolean
   underline       Boolean
