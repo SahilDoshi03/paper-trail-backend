@@ -70,7 +70,7 @@ const createDocument = async (req: Request, res: Response) => {
                     bold: false,
                     italic: false,
                     underline: false,
-                    backgroundColor: "unset",
+                    backgroundColor: "transparent",
                   },
                 ],
               },
