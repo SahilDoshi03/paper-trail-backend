@@ -60,47 +60,67 @@ const createDocument = (title: string) => {
   });
 };
 
-const updateDocument = async (id: number, title: string, elements: any[]) => {
-  await prisma.textNode.deleteMany({
-    where: {
-      element: { documentId: id },
-    },
-  });
+const updateDocument = async (
+  id: number,
+  title?: string,
+  elements?: any[]
+) => {
+  if (elements && elements.length > 0) {
+    await prisma.textNode.deleteMany({
+      where: {
+        element: { documentId: id },
+      },
+    });
 
-  await prisma.elementNode.deleteMany({
-    where: {
-      documentId: id,
-    },
-  });
+    await prisma.elementNode.deleteMany({
+      where: {
+        documentId: id,
+      },
+    });
 
-  const elementData = elements.map((el: any) => ({
-    type: el.type,
-    textAlign: el.textAlign,
-    fontFamily: el.fontFamily,
-    paraSpaceAfter: el.paraSpaceAfter,
-    paraSpaceBefore: el.paraSpaceBefore,
-    lineHeight: el.lineHeight,
-    children: {
-      create: el.children.map((child: any) => ({
-        text: child.text,
-        textAlign: child.textAlign,
-        color: child.color,
-        fontSize: child.fontSize,
-        bold: child.bold,
-        italic: child.italic,
-        underline: child.underline,
-        backgroundColor: child.backgroundColor,
-      })),
-    },
-  }));
+    const elementData = elements.map((el: any) => ({
+      type: el.type,
+      textAlign: el.textAlign,
+      fontFamily: el.fontFamily,
+      paraSpaceAfter: el.paraSpaceAfter,
+      paraSpaceBefore: el.paraSpaceBefore,
+      lineHeight: el.lineHeight,
+      children: {
+        create: el.children.map((child: any) => ({
+          text: child.text,
+          textAlign: child.textAlign,
+          color: child.color,
+          fontSize: child.fontSize,
+          bold: child.bold,
+          italic: child.italic,
+          underline: child.underline,
+          backgroundColor: child.backgroundColor,
+        })),
+      },
+    }));
+
+    return prisma.document.update({
+      where: { id },
+      data: {
+        title: title || undefined,
+        elements: {
+          create: elementData,
+        },
+      },
+      include: {
+        elements: {
+          include: {
+            children: true,
+          },
+        },
+      },
+    });
+  }
 
   return prisma.document.update({
     where: { id },
     data: {
-      title: title || undefined,
-      elements: {
-        create: elementData,
-      },
+      ...(title ? { title } : {}),
     },
     include: {
       elements: {
