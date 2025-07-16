@@ -19,10 +19,10 @@ const getDocumentById = (id: number) => {
   });
 };
 
-const createDocument = (title: string) => {
+const createDocument = () => {
   return prisma.document.create({
     data: {
-      title: title || "Untitled Document",
+      title: "Untitled Document",
       elements: {
         create: [
           {
