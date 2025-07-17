@@ -1,4 +1,5 @@
 import { PrismaClient } from "../generated/prisma";
+import { CustomElement, PartialDocumentType } from "../schemas/Document";
 
 const prisma = new PrismaClient();
 
@@ -60,11 +61,22 @@ const createDocument = () => {
   });
 };
 
+import type { Prisma } from "../generated/prisma";
+
 const updateDocument = async (
   id: number,
-  title?: string,
-  elements?: any[]
+  doc: PartialDocumentType
 ) => {
+  const { elements, ...restFields } = doc;
+
+  const data: Partial<Prisma.DocumentUpdateInput> = {};
+
+  for (const [key, value] of Object.entries(restFields)) {
+    if (value !== undefined) {
+      data[key as keyof typeof restFields] = value;
+    }
+  }
+
   if (elements && elements.length > 0) {
     await prisma.textNode.deleteMany({
       where: {
@@ -78,50 +90,41 @@ const updateDocument = async (
       },
     });
 
-    const elementData = elements.map((el: any) => ({
-      type: el.type,
-      textAlign: el.textAlign,
-      fontFamily: el.fontFamily,
-      paraSpaceAfter: el.paraSpaceAfter,
-      paraSpaceBefore: el.paraSpaceBefore,
-      lineHeight: el.lineHeight,
-      children: {
-        create: el.children.map((child: any) => ({
-          text: child.text,
-          textAlign: child.textAlign,
-          color: child.color,
-          fontSize: child.fontSize,
-          bold: child.bold,
-          italic: child.italic,
-          underline: child.underline,
-          backgroundColor: child.backgroundColor,
-        })),
-      },
-    }));
+    const elementNodes = elements.filter(
+      (el): el is CustomElement => typeof el === "object" && "type" in el && "children" in el
+    );
 
-    return prisma.document.update({
-      where: { id },
-      data: {
-        title: title || undefined,
-        elements: {
-          create: elementData,
+    data.elements = {
+      create: elementNodes.map((el): Prisma.ElementNodeCreateWithoutDocumentInput => ({
+        type: el.type,
+        textAlign: el.textAlign,
+        fontFamily: el.fontFamily,
+        paraSpaceAfter: el.paraSpaceAfter,
+        paraSpaceBefore: el.paraSpaceBefore,
+        lineHeight: el.lineHeight,
+        children: {
+          create: el.children.map((child): Prisma.TextNodeCreateWithoutElementInput => ({
+            text: child.text,
+            textAlign: child.textAlign,
+            color: child.color,
+            fontSize: child.fontSize,
+            bold: child.bold,
+            italic: child.italic,
+            underline: child.underline,
+            backgroundColor: child.backgroundColor,
+          })),
         },
-      },
-      include: {
-        elements: {
-          include: {
-            children: true,
-          },
-        },
-      },
-    });
+      })),
+    };
+  }
+
+  if (Object.keys(data).length === 0) {
+    throw new Error("No valid fields provided for update.");
   }
 
   return prisma.document.update({
     where: { id },
-    data: {
-      ...(title ? { title } : {}),
-    },
+    data,
     include: {
       elements: {
         include: {
