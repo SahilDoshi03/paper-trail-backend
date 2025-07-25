@@ -9,7 +9,11 @@ import {
 
 const router = express.Router();
 
-router.route("/").get(getDocuments).post(createDocument);
+router
+  .route("/")
+  .get(getDocuments)
+  .post(createDocument);
+
 router
   .route("/:id")
   .get(getDocumentById)

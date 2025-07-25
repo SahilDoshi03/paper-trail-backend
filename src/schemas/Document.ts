@@ -30,7 +30,6 @@ export const DocumentSchema = z.object({
   elements: z.array(DescendantSchema),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime()
-
 });
 
 export const PartialDocumentSchema = DocumentSchema.partial();
