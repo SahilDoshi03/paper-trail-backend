@@ -14,12 +14,7 @@ const getUsers = async (_: Request, res: Response) => {
 };
 
 const getUserById = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-
-  if (isNaN(userId)) {
-    res.status(400).json({ error: "Invalid user ID" });
-    return;
-  }
+  const userId = req.params.id
 
   try {
     const user = await userService.getUserById(userId);
@@ -62,12 +57,7 @@ const createUser = async (req: Request, res: Response) => {
 };
 
 const updateUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-
-  if (isNaN(userId)) {
-    res.status(400).json({ error: "Invalid user ID" });
-    return;
-  }
+  const userId = req.params.id;
 
   try {
     const userData = PartialUserSchema.parse(req.body);
@@ -82,12 +72,7 @@ const updateUser = async (req: Request, res: Response) => {
 };
 
 const deleteUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id, 10);
-
-  if (isNaN(userId)) {
-    res.status(400).json({ error: "Invalid user ID" });
-    return;
-  }
+  const userId = req.params.id
 
   try {
     await userService.deleteUser(userId);

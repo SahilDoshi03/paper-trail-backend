@@ -12,7 +12,7 @@ const getUsers = async () => {
   }
 };
 
-const getUserById = async (id: number) => {
+const getUserById = async (id: string) => {
   try {
     return await prisma.user.findUnique({
       where: { id },
@@ -45,7 +45,7 @@ const createUser = async (userData: UserType) => {
   }
 };
 
-const updateUser = async (id: number, userData: PartialUserType) => {
+const updateUser = async (id: string, userData: PartialUserType) => {
   try {
     return await prisma.user.update({
       where: { id },
@@ -57,7 +57,7 @@ const updateUser = async (id: number, userData: PartialUserType) => {
   }
 };
 
-const deleteUser = async (id: number) => {
+const deleteUser = async (id: string) => {
   try {
     await prisma.user.delete({
       where: { id },

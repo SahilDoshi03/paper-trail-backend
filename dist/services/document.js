@@ -176,24 +176,24 @@ const updateDocument = (id, doc) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.updateDocument = updateDocument;
-const deleteDocument = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteDocument = (documentId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield prisma.textNode.deleteMany({
             where: {
-                element: { documentId: id },
+                element: { documentId },
             },
         });
         yield prisma.elementNode.deleteMany({
             where: {
-                documentId: id,
+                documentId,
             },
         });
         yield prisma.document.delete({
-            where: { id },
+            where: { id: documentId },
         });
     }
     catch (error) {
-        console.error(`Error deleting document with id ${id}:`, error);
+        console.error(`Error deleting document with id ${documentId}:`, error);
         throw error;
     }
 });

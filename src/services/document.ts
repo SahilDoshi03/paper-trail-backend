@@ -4,7 +4,7 @@ import { CustomElement, PartialDocumentType } from "../schemas/Document";
 
 const prisma = new PrismaClient();
 
-const getDocuments = async (ownerId?: number) => {
+const getDocuments = async (ownerId?: string) => {
   try {
     return await prisma.document.findMany({
       where: { ownerId },
@@ -22,7 +22,7 @@ const getDocuments = async (ownerId?: number) => {
   }
 };
 
-const getDocumentById = async (id: number) => {
+const getDocumentById = async (id: string) => {
   try {
     return await prisma.document.findUnique({
       where: { id },
@@ -42,7 +42,7 @@ const getDocumentById = async (id: number) => {
 
 
 
-const createDocument = async (ownerId: number) => {
+const createDocument = async (ownerId: string) => {
   try {
     return await prisma.document.create({
       data: {
@@ -91,7 +91,7 @@ const createDocument = async (ownerId: number) => {
   }
 };
 
-const updateDocument = async (id: number, doc: PartialDocumentType) => {
+const updateDocument = async (id: string, doc: PartialDocumentType) => {
   try {
     const { elements, ...restFields } = doc;
 
@@ -170,25 +170,25 @@ const updateDocument = async (id: number, doc: PartialDocumentType) => {
   }
 };
 
-const deleteDocument = async (id: number) => {
+const deleteDocument = async (documentId: string) => {
   try {
     await prisma.textNode.deleteMany({
       where: {
-        element: { documentId: id },
+        element: { documentId },
       },
     });
 
     await prisma.elementNode.deleteMany({
       where: {
-        documentId: id,
+        documentId,
       },
     });
 
     await prisma.document.delete({
-      where: { id },
+      where: { id: documentId },
     });
   } catch (error) {
-    console.error(`Error deleting document with id ${id}:`, error);
+    console.error(`Error deleting document with id ${documentId}:`, error);
     throw error;
   }
 };

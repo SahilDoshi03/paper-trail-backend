@@ -6,7 +6,7 @@ import z from "zod";
 const getDocuments = async (req: Request, res: Response) => {
 
   const schema = z.object({
-    'x-user-id': z.coerce.number(),
+    'x-user-id': z.coerce.string(),
   });
 
   const result = schema.safeParse(req.headers);
@@ -33,25 +33,21 @@ const getDocuments = async (req: Request, res: Response) => {
 };
 
 const getDocumentById = async (req: Request, res: Response) => {
-  const docId = parseInt(req.params.id, 10);
+  const docId = req.params.id
 
   const schema = z.object({
-    'x-user-id': z.coerce.number(),
+    'x-user-id': z.coerce.string(),
   });
 
   const result = schema.safeParse(req.headers);
 
-  if (isNaN(docId)) {
-    res.status(400).json({ error: "Invalid document ID" });
-    return;
-  }
 
   if (!result.success) {
     res.status(400).json({ error: "Invalid or missing userId" });
     return;
   }
 
-  const userId = result.data['x-user-id'];
+  const userId: string = result.data['x-user-id'];
 
   try {
     const document = await documentService.getDocumentById(docId);
@@ -76,7 +72,7 @@ const getDocumentById = async (req: Request, res: Response) => {
 };
 
 const createDocument = async (req: Request, res: Response) => {
-  const ownerId: number = req.body.ownerId
+  const ownerId: string = req.body.ownerId
   try {
     const document = await documentService.createDocument(ownerId);
     res.status(201).json({ document });
@@ -86,13 +82,8 @@ const createDocument = async (req: Request, res: Response) => {
 };
 
 const updateDocument = async (req: Request, res: Response) => {
-  const docId = parseInt(req.params.id, 10);
+  const docId = req.params.id;
   const userId = req.body.id;
-
-  if (isNaN(docId)) {
-    res.status(400).json({ error: "Invalid document ID" });
-    return;
-  }
 
   try {
     const doc = req.body;
@@ -124,13 +115,8 @@ const updateDocument = async (req: Request, res: Response) => {
 };
 
 const deleteDocument = async (req: Request, res: Response) => {
-  const docId = parseInt(req.params.id, 10);
+  const docId = req.params.id;
   const userId = req.body.id;
-
-  if (isNaN(docId)) {
-    res.status(400).json({ error: "Invalid document ID" });
-    return;
-  }
 
   try {
     const document = await documentService.getDocumentById(docId);

@@ -2,9 +2,9 @@
 import z from "zod";
 
 export const UserSchema = z.object({
-  id: z.number().optional(),
+  id: z.string().optional(),
   name: z.string(),
-  email: z.email(),
+  email: z.email().optional(),
   createdAt: z.iso.datetime().optional(),
   updatedAt: z.iso.datetime().optional()
 });

@@ -51,7 +51,7 @@ const Document_1 = require("../schemas/Document");
 const zod_1 = __importDefault(require("zod"));
 const getDocuments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const schema = zod_1.default.object({
-        'x-user-id': zod_1.default.coerce.number(),
+        'x-user-id': zod_1.default.coerce.string(),
     });
     const result = schema.safeParse(req.headers);
     if (!result.success) {
@@ -75,15 +75,11 @@ const getDocuments = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getDocuments = getDocuments;
 const getDocumentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const docId = parseInt(req.params.id, 10);
+    const docId = req.params.id;
     const schema = zod_1.default.object({
-        'x-user-id': zod_1.default.coerce.number(),
+        'x-user-id': zod_1.default.coerce.string(),
     });
     const result = schema.safeParse(req.headers);
-    if (isNaN(docId)) {
-        res.status(400).json({ error: "Invalid document ID" });
-        return;
-    }
     if (!result.success) {
         res.status(400).json({ error: "Invalid or missing userId" });
         return;
@@ -109,7 +105,7 @@ const getDocumentById = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.getDocumentById = getDocumentById;
 const createDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const ownerId = req.body.id;
+    const ownerId = req.body.ownerId;
     try {
         const document = yield documentService.createDocument(ownerId);
         res.status(201).json({ document });
@@ -120,12 +116,8 @@ const createDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.createDocument = createDocument;
 const updateDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const docId = parseInt(req.params.id, 10);
+    const docId = req.params.id;
     const userId = req.body.id;
-    if (isNaN(docId)) {
-        res.status(400).json({ error: "Invalid document ID" });
-        return;
-    }
     try {
         const doc = req.body;
         const document = yield documentService.getDocumentById(docId);
@@ -151,12 +143,8 @@ const updateDocument = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 exports.updateDocument = updateDocument;
 const deleteDocument = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const docId = parseInt(req.params.id, 10);
+    const docId = req.params.id;
     const userId = req.body.id;
-    if (isNaN(docId)) {
-        res.status(400).json({ error: "Invalid document ID" });
-        return;
-    }
     try {
         const document = yield documentService.getDocumentById(docId);
         if (!document) {

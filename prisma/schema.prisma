@@ -9,28 +9,28 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model ElementNode {
-  id              Int        @id @default(autoincrement())
+  id              String     @id @default(cuid())
   type            String
   textAlign       String
   fontFamily      String
   paraSpaceAfter  Int
   paraSpaceBefore Int
   lineHeight      Float
-  documentId      Int
+  documentId      String
   document        Document   @relation(fields: [documentId], references: [id])
   children        TextNode[]
 }
 
 model TextNode {
-  id              Int         @id @default(autoincrement())
+  id              String      @id @default(cuid())
   text            String
   textAlign       String
   color           String
@@ -39,17 +39,17 @@ model TextNode {
   italic          Boolean
   underline       Boolean
   backgroundColor String
-  elementId       Int
+  elementId       String
   element         ElementNode @relation(fields: [elementId], references: [id])
 }
 
 model Document {
-  id               Int           @id @default(autoincrement())
+  id               String        @id @default(cuid())
   title            String        @default("Untitled Document")
   elements         ElementNode[]
-  ownerId          Int
-  readAccessUsers  Int[]
-  writeAccessUsers Int[]
+  ownerId          String
+  readAccessUsers  String[]
+  writeAccessUsers String[]
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 }

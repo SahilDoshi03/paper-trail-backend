@@ -60,11 +60,7 @@ const getUsers = (_, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getUsers = getUsers;
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = parseInt(req.params.id, 10);
-    if (isNaN(userId)) {
-        res.status(400).json({ error: "Invalid user ID" });
-        return;
-    }
+    const userId = req.params.id;
     try {
         const user = yield userService.getUserById(userId);
         if (!user) {
@@ -108,11 +104,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.createUser = createUser;
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = parseInt(req.params.id, 10);
-    if (isNaN(userId)) {
-        res.status(400).json({ error: "Invalid user ID" });
-        return;
-    }
+    const userId = req.params.id;
     try {
         const userData = User_1.PartialUserSchema.parse(req.body);
         const updatedUser = yield userService.updateUser(userId, userData);
@@ -127,11 +119,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateUser = updateUser;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = parseInt(req.params.id, 10);
-    if (isNaN(userId)) {
-        res.status(400).json({ error: "Invalid user ID" });
-        return;
-    }
+    const userId = req.params.id;
     try {
         yield userService.deleteUser(userId);
         res.status(204).send();
